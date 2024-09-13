@@ -47,10 +47,14 @@ struct MealView: View {
                                     Text(date).font(.system(size: 12)).padding(.trailing, 8)
                                 }.padding(.bottom, 4).padding(.top, 10)
                                 
-                                ForEach(meal, id: \.self) { item in
-                                    Text("- \(item)")
-                                        .font(.system(size: 16))
-                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                if(!meal.isEmpty) {
+                                    ForEach(meal, id: \.self) { item in
+                                        Text("- \(item)")
+                                            .font(.system(size: 16))
+                                            .frame(maxWidth: .infinity, alignment: .leading)
+                                    }
+                                } else {
+                                    Text("급식 정보가 없습니다")
                                 }
                             }
                             .padding(.leading, 8)
