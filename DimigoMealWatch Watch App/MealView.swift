@@ -25,46 +25,46 @@ struct MealView: View {
     var meal: [String]
     var date: String
     @State private var watchDisplayHeight: CGFloat = WKInterfaceDevice.current().screenBounds.height
+    @State private var watchDisplayWidth: CGFloat = WKInterfaceDevice.current().screenBounds.width
     
     var body: some View {
         ZStack {
-        Image(time).brightness(-0.1)
-        RoundedRectangle(cornerRadius: 25.0)
-            .fill(Color.white)
-            .opacity(0.4).brightness(-0.1)
-            .overlay(
-                VStack {
-                    ScrollView {
-                        VStack(alignment: .leading) {
-                            HStack {
-                                Text(
-                                    time == "breakfast" ? "아침"
-                                    :time == "lunch" ? "점심" : "저녁"                               )
-                                .font(.system(size: 20))
-                                .fontWeight(.bold)
-                                Spacer()
-                                Text(date).font(.system(size: 12)).padding(.trailing, 12)
-                            }.padding(.bottom, 4).padding(.top, 10)
-                            
-                            ForEach(meal, id: \.self) { item in
-                                Text("- \(item)")
-                                    .font(.system(size: 16))
-                                    .frame(maxWidth: .infinity, alignment: .leading)
+            Image(time).resizable().frame(width: watchDisplayWidth, height: watchDisplayHeight + 24).brightness(-0.1).padding(.top, -24)
+            RoundedRectangle(cornerRadius: 24)
+                .fill(Color.white)
+                .opacity(0.4).brightness(-0.1)
+                .overlay(
+                    VStack {
+                        ScrollView {
+                            VStack(alignment: .leading) {
+                                HStack {
+                                    Text(
+                                        time == "breakfast" ? "아침"
+                                        :time == "lunch" ? "점심" : "저녁"                               )
+                                    .font(.system(size: 20))
+                                    .fontWeight(.bold)
+                                    Spacer()
+                                    Text(date).font(.system(size: 12)).padding(.trailing, 8)
+                                }.padding(.bottom, 4).padding(.top, 10)
+                                
+                                ForEach(meal, id: \.self) { item in
+                                    Text("- \(item)")
+                                        .font(.system(size: 16))
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                }
                             }
-                        }
-                        .padding(.leading, 12)
-                    }.clipped()
-                }
-                    .padding()
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: 25.0)
-                    .stroke(Color.white.opacity(0.4), lineWidth: 0.6)
-            )
-        
-            .frame(width: watchDisplayHeight > 216 ? 172 : 150, height: watchDisplayHeight > 216 ? 212 : 186)
-            .padding(12)
-            .padding(.top, -20)
+                            .padding(.leading, 8)
+                        }.clipped()
+                    }
+                        .padding()
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: 28)
+                        .stroke(Color.white.opacity(0.4), lineWidth: 0.6)
+                )
+                .padding(12)
+                .frame(width: watchDisplayWidth, height: watchDisplayHeight)
+                .padding(.top, -24)
         }
         .background(OverlayPlayerForTimeRemove())
     }
