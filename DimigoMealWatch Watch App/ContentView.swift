@@ -21,6 +21,7 @@ struct OverlayPlayerForTimeRemove: View {
 }
 
 struct ContentView: View {
+    
     var meal = (
         breakfast: "햄사라다모닝빵/쌀밥/소고기만두전골/가마보꼬강정/건파래무침/배추겉절이/아보카도베이컨샐러드&유자d/시리얼2종/우유,저지방우유,두유,과채주스2종1택/유산균",
         dinner: "짜장제육볶음/수수밥/쌀밥/감자옹심이국/애송이짬뽕소스조림/청경채겉절이/포기김치/초코생크림와플/비빔코너/샐러드바/영양밥",
@@ -33,22 +34,27 @@ struct ContentView: View {
         return separatedArray
     }
     
+    
+    @State private var watchDisplayHeight: CGFloat = WKInterfaceDevice.current().screenBounds.height
+    
+    
     var body: some View {
         ZStack {
-            Image("bg").brightness(-0.05)
+            Image("bg").brightness(-0.1)
             RoundedRectangle(cornerRadius: 25.0)
                 .fill(Color.white)
-                .opacity(0.3)
+                .opacity(0.4).brightness(-0.1)
                 .overlay(
                     VStack {
                         ScrollView {
                             VStack(alignment: .leading) {
+                                //                               Text("\(watchDisplayHeight)")
                                 HStack {
                                     Text("아침")
                                         .font(.system(size: 20))
                                         .fontWeight(.bold)
                                     Spacer()
-                                    Text(meal.date).font(.system(size: 14)).padding(.trailing, 12)
+                                    Text(meal.date).font(.system(size: 12)).padding(.trailing, 12)
                                 }.padding(.bottom, 4).padding(.top, 10)
                                 
                                 ForEach(splitString(input: meal.breakfast), id: \.self) { item in
@@ -66,8 +72,9 @@ struct ContentView: View {
                     RoundedRectangle(cornerRadius: 25.0)
                         .stroke(Color.white.opacity(0.4), lineWidth: 0.6)
                 )
-                .frame(width: 172, height: 220)
-                .padding()
+            
+                .frame(width: watchDisplayHeight > 200 ? 172 : 150, height: watchDisplayHeight > 200 ? 212 : 186)
+                .padding(12)
                 .padding(.top, -24)
         }
         .background(OverlayPlayerForTimeRemove())
