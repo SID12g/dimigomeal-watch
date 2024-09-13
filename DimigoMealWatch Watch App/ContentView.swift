@@ -9,7 +9,7 @@ import SwiftUI
 import Foundation
 import Combine
 
-// 1. 모델 정의
+
 struct MealData: Codable {
     let breakfast: String
     let lunch: String
@@ -17,14 +17,22 @@ struct MealData: Codable {
     let date: String
 }
 
-// 2. ViewModel (API 요청 및 데이터 관리)
+
 class MealViewModel: ObservableObject {
     @Published var meal: MealData?
     @Published var isLoading = false
     
+    let date = Date()
+    
+    func formatDateToYYYYMMDD(date: Date) -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        return dateFormatter.string(from: date)
+    }
+    
     func fetchMeal() {
-        guard let url = URL(string: "https://api.xn--299a1v27nvthhjj.com/meal/2024-09-13") else {
-            print("Invalid URL")
+        guard let url = URL(string: "https://api.xn--299a1v27nvthhjj.com/meal/\(formatDateToYYYYMMDD(date: date))") else {
+            print("잘못된 Request")
             return
         }
         
@@ -39,13 +47,13 @@ class MealViewModel: ObservableObject {
                         self.isLoading = false
                     }
                 } catch {
-                    print("Failed to decode JSON: \(error.localizedDescription)")
+                    print("JSON 변환 실패: \(error.localizedDescription)")
                     DispatchQueue.main.async {
                         self.isLoading = false
                     }
                 }
             } else if let error = error {
-                print("Error: \(error.localizedDescription)")
+                print("오류: \(error.localizedDescription)")
                 DispatchQueue.main.async {
                     self.isLoading = false
                 }
@@ -54,19 +62,26 @@ class MealViewModel: ObservableObject {
     }
 }
 
-// 3. ContentView
+
 struct ContentView: View {
     @StateObject var viewModel = MealViewModel()
+    let date = Date()
+    
+    func formatDateToYYYYMMDD(date: Date) -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        return dateFormatter.string(from: date)
+    }
     
     func splitString(input: String) -> [String] {
         let separatedArray = input.split(separator: "/").map { String($0) }
         return separatedArray
     }
-
+    
     var body: some View {
         Group {
             if viewModel.isLoading {
-                ProgressView("Loading...") // 로딩 중일 때 표시할 UI
+                ProgressView("로딩중...")
             } else if let meal = viewModel.meal {
                 TabView {
                     MealView(time: "breakfast", meal: splitString(input: meal.breakfast), date: meal.date)
@@ -75,16 +90,17 @@ struct ContentView: View {
                 }
                 .tabViewStyle(PageTabViewStyle())
             } else {
-                Text("No meal data available") // 데이터가 없을 때 표시할 메시지
+                Text("급식 정보가 없습니다")
+                Text("\(formatDateToYYYYMMDD(date: date))")
             }
         }
         .onAppear {
-            viewModel.fetchMeal() // 뷰가 나타날 때 API 요청 시작
+            viewModel.fetchMeal()
         }
     }
 }
 
-// 5. Preview
+
 #Preview {
     ContentView()
 }

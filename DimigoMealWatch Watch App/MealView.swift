@@ -9,6 +9,7 @@ import SwiftUI
 import AVFoundation
 import AVKit
 
+
 struct OverlayPlayerForTimeRemove: View {
     var body: some View {
         VideoPlayer(player: nil, videoOverlay: { })
@@ -19,6 +20,7 @@ struct OverlayPlayerForTimeRemove: View {
             .accessibilityHidden(true)
     }
 }
+
 
 struct MealView: View {
     var time: String
@@ -73,6 +75,7 @@ struct MealView: View {
         .background(OverlayPlayerForTimeRemove())
     }
 }
+
 
 #Preview {
     MealView(time: "breakfast", meal: ["햄사라다모닝빵","쌀밥","소고기만두전골","가마보꼬강정","건파래무침","배추겉절이","아보카도베이컨샐러드&유자d","시리얼2종","우유,저지방우유,두유,과채주스2종1택","유산균"], date: "2024-09-12")
