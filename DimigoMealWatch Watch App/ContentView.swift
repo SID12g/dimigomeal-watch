@@ -62,9 +62,9 @@ class MealViewModel: ObservableObject {
     }
 }
 
-
 struct ContentView: View {
     @StateObject var viewModel = MealViewModel()
+    @State private var selectedTab = 0
     let date = Date()
     
     func formatDateToYYYYMMDD(date: Date) -> String {
@@ -78,17 +78,36 @@ struct ContentView: View {
         return separatedArray
     }
     
+    func determineInitialTabIndex() -> Int {
+        let calendar = Calendar.current
+        let currentHour = calendar.component(.hour, from: Date())
+        
+        if currentHour >= 0 && currentHour < 9 {
+            return 0 // 아침
+        } else if currentHour >= 9 && currentHour < 14 {
+            return 1 // 점심
+        } else {
+            return 2 // 저녁
+        }
+    }
+    
     var body: some View {
         Group {
             if viewModel.isLoading {
                 ProgressView("로딩중...")
             } else if let meal = viewModel.meal {
-                TabView {
+                TabView(selection: $selectedTab) {
                     MealView(time: "breakfast", meal: splitString(input: meal.breakfast), date: meal.date)
+                        .tag(0)
                     MealView(time: "lunch", meal: splitString(input: meal.lunch), date: meal.date)
+                        .tag(1)
                     MealView(time: "dinner", meal: splitString(input: meal.dinner), date: meal.date)
+                        .tag(2)
                 }
                 .tabViewStyle(PageTabViewStyle())
+                .onAppear {
+                    selectedTab = determineInitialTabIndex()
+                }
             } else {
                 Text("급식 정보가 없습니다")
                 Text("\(formatDateToYYYYMMDD(date: date))")
@@ -99,6 +118,7 @@ struct ContentView: View {
         }
     }
 }
+
 
 
 #Preview {
