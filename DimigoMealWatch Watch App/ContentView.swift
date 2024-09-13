@@ -6,19 +6,7 @@
 //
 
 import SwiftUI
-import AVFoundation
-import AVKit
 
-struct OverlayPlayerForTimeRemove: View {
-    var body: some View {
-        VideoPlayer(player: nil, videoOverlay: { })
-            .focusable(false)
-            .disabled(true)
-            .opacity(0)
-            .allowsHitTesting(false)
-            .accessibilityHidden(true)
-    }
-}
 
 struct ContentView: View {
     
@@ -34,50 +22,15 @@ struct ContentView: View {
         return separatedArray
     }
     
-    
-    @State private var watchDisplayHeight: CGFloat = WKInterfaceDevice.current().screenBounds.height
-    
-    
     var body: some View {
-        ZStack {
-            Image("bg").brightness(-0.1)
-            RoundedRectangle(cornerRadius: 25.0)
-                .fill(Color.white)
-                .opacity(0.4).brightness(-0.1)
-                .overlay(
-                    VStack {
-                        ScrollView {
-                            VStack(alignment: .leading) {
-                                //                               Text("\(watchDisplayHeight)")
-                                HStack {
-                                    Text("아침")
-                                        .font(.system(size: 20))
-                                        .fontWeight(.bold)
-                                    Spacer()
-                                    Text(meal.date).font(.system(size: 12)).padding(.trailing, 12)
-                                }.padding(.bottom, 4).padding(.top, 10)
-                                
-                                ForEach(splitString(input: meal.breakfast), id: \.self) { item in
-                                    Text("- \(item)")
-                                        .font(.system(size: 16))
-                                        .frame(maxWidth: .infinity, alignment: .leading)
-                                }
-                            }
-                            .padding(.leading, 12)
-                        }.clipped()
-                    }
-                        .padding()
-                )
-                .overlay(
-                    RoundedRectangle(cornerRadius: 25.0)
-                        .stroke(Color.white.opacity(0.4), lineWidth: 0.6)
-                )
-            
-                .frame(width: watchDisplayHeight > 200 ? 172 : 150, height: watchDisplayHeight > 200 ? 212 : 186)
-                .padding(12)
-                .padding(.top, -24)
+        
+        ScrollView{
+            MealView(time: "breakfast", meal: splitString(input: meal.breakfast), date: meal.date)
+            MealView(time: "lunch", meal: splitString(input: meal.lunch), date: meal.date)
+        MealView(time: "dinner", meal: splitString(input: meal.dinner), date: meal.date)
         }
-        .background(OverlayPlayerForTimeRemove())
+            
+       
     }
 }
 
