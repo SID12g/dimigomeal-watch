@@ -17,7 +17,6 @@ struct MealData: Codable {
     let date: String
 }
 
-
 class MealViewModel: ObservableObject {
     @Published var meal: MealData?
     @Published var isLoading = false
@@ -31,7 +30,8 @@ class MealViewModel: ObservableObject {
     }
     
     func fetchMeal() {
-        guard let url = URL(string: "https://api.xn--299a1v27nvthhjj.com/meal/\(formatDateToYYYYMMDD(date: date))") else {
+        let formattedDate = formatDateToYYYYMMDD(date: date)
+        guard let url = URL(string: "https://api.xn--299a1v27nvthhjj.com/meal/\(formattedDate)") else {
             print("잘못된 Request")
             return
         }
